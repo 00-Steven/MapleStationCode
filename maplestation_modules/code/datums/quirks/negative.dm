@@ -93,3 +93,36 @@
 	INVOKE_ASYNC(quirk_holder, TYPE_PROC_REF(/mob/living, pain_emote))
 	quirk_holder.add_mood_event("bad_touch", /datum/mood_event/very_bad_touch)
 	COOLDOWN_START(src, time_since_last_touch, 30 SECONDS)
+
+// Spawn with an item that you are soulbound to (must say close or build up lethal levels of stress and slowly lose blood, should persist through mindswaps)
+/datum/quirk/item_quirk/soulbound_item
+	name = "Soulbound Item"
+	desc = "You are nearsighted without prescription glasses, but spawn with a pair." //TODO
+	icon = FA_ICON_GLASSES //TODO
+	value = -4 //TODO
+	gain_text = span_danger("Things far away from you start looking blurry.") //TODO
+	lose_text = span_notice("You start seeing faraway things normally again.") //TODO
+	medical_record_text = "Patient requires prescription glasses in order to counteract nearsightedness." //TODO
+	hardcore_value = 5 //TODO
+	quirk_flags = QUIRK_HUMAN_ONLY
+	mail_goodies = list(/obj/item/clothing/glasses/regular) // extra pair if orginal one gets broken by somebody mean //TODO
+	/// A weak reference to our soulbound item.
+	var/datum/weakref/soulbound_item_ref
+
+/datum/quirk_constant_data/soulbound_item
+	associated_typepath = /datum/quirk/item_quirk/soulbound_item
+	customization_options = list(/datum/preference/choiced/soulbound_item)
+
+/datum/quirk/item_quirk/soulbound_item/add_unique(client/client_source)
+	var/soulbound_item_name = client_source?.prefs.read_preference(/datum/preference/choiced/soulbound_item) || "Loaf of Bread"
+	var/obj/item/soulbound_item_type
+
+	soulbound_item_name = soulbound_item_name == "Random" ? pick(GLOB.item_choice_soulbound_item) : soulbound_item_name
+	soulbound_item_type = GLOB.item_choice_soulbound_item[soulbound_item_name]
+
+	var/obj/new_soulbound_item = new soulbound_item_type(get_turf(quirk_holder))
+	
+	give_item_to_holder(new_soulbound_item, list(
+		LOCATION_BACKPACK = ITEM_SLOT_BACKPACK,
+	))
+	quirk_holder.AddComponent(/datum/component/soulbound_person, quirk_holder.mind, new_soulbound_item)

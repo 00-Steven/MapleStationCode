@@ -24,3 +24,10 @@ GLOBAL_LIST_INIT(limb_choice_transhuman, list(
 	"Left Leg" = /obj/item/bodypart/leg/left/robot,
 	"Right Leg" = /obj/item/bodypart/leg/right/robot,
 ))
+
+GLOBAL_LIST_INIT(item_choice_soulbound_item, list(
+	"Nanotrasen Mug" = /obj/item/reagent_containers/cup/glass/mug/nanotrasen,
+	"Purple Shard" = /obj/item/shard/plasma,
+	"Demon Heart" = /obj/item/organ/internal/heart/demon,
+	"Loaf of Bread" = /obj/item/food/bread/plain,
+))
